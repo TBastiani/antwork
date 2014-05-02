@@ -57,7 +57,11 @@ void taskRelease(
 
 	/* Release task */
 	if (task->numParents <= 1)
+	{
+		if (task->children != NULL)
+			free(task->children);
 		free(task);
+	}
 	else
 		task->numParents--;
 }
