@@ -8,7 +8,6 @@
 void dummyRun(void *argument)
 {
 	sleep((double) ((size_t) argument));
-	DEBUG_MESSAGE("Done sleeping %lu seconds", (size_t) argument);
 }
 
 static task_t *createDummyTask(size_t seconds)
@@ -54,8 +53,13 @@ int main()
 	taskAddParent(joinTask, grandKid6);
 	taskAddParent(joinTask, grandKid7);
 
-	taskRun(rootTask, threadPool);
-	barrierWait(&barrier);
+	for (unsigned run = 0; run < 3; run++)
+	{
+		barrierReset(&barrier);
+		taskRun(rootTask, threadPool);
+		barrierWait(&barrier);
+		DEBUG_MESSAGE("All tasks have been completed");
+	}
 
 	barrierDestroy(&barrier);
 	threadPoolDestroy(threadPool);
