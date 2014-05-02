@@ -13,4 +13,10 @@
 	}\
 }
 
+#define DEBUG_MESSAGE(...)\
+{\
+	printf(__VA_ARGS__);\
+	printf("\n");\
+}
+
 #endif /* !_EXCEPTION_H_ */
