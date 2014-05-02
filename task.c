@@ -2,6 +2,7 @@
 
 #include "exception.h"
 #include "task.h"
+#include "thread_pool.h"
 
 task_t *taskCreate(
 		void (*fnPtr)(void *),
@@ -31,7 +32,8 @@ void taskAddParent(
 }
 
 void taskRun(
-		task_t *task)
+		task_t *task,
+		struct thread_pool *pool)
 {
 	task->numParentsDone = 0;
 	task->workFnPtr(task->argument);
@@ -42,7 +44,7 @@ void taskRun(
 		task_t *childTask = task->children[index];
 		childTask->numParentsDone++;
 		if (childTask->numParentsDone == childTask->numParents)
-			taskRun(childTask);
+			threadPoolAddTask(pool, childTask);
 	}
 }
 
