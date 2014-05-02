@@ -15,9 +15,13 @@ static task_t *createDummyTask(size_t seconds)
 	return taskCreate(dummyRun, (void *) seconds);
 }
 
-int main()
+int main(int argc, char **argv)
 {
-	thread_pool_t *threadPool = threadPoolCreate(4);
+	unsigned numThreads = 2;
+	if (argc == 2)
+		numThreads = atoi(argv[1]);
+
+	thread_pool_t *threadPool = threadPoolCreate(numThreads);
 
 	task_t *rootTask = createDummyTask(1);
 	task_t *childTask1 = createDummyTask(1);
