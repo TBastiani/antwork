@@ -36,3 +36,10 @@ void barrierWait(barrier_t *barrier)
 		pthread_cond_wait(&barrier->doneCondition, &barrier->doneMutex);
 	pthread_mutex_unlock(&barrier->doneMutex);
 }
+
+void barrierReset(barrier_t *barrier)
+{
+	pthread_mutex_lock(&barrier->doneMutex);
+	barrier->done = 0;
+	pthread_mutex_unlock(&barrier->doneMutex);
+}

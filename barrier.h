@@ -18,4 +18,6 @@ void barrierDestroy(barrier_t *barrier);
 
 void barrierWait(barrier_t *);
 
+void barrierReset(barrier_t *);
+
 #endif /* !_BARRIER_H_ */
