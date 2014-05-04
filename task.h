@@ -13,7 +13,7 @@ typedef struct task
 	unsigned numChildren;
 
 	unsigned numParents;
-	unsigned numParentsDone;
+	_Atomic unsigned numParentsDone;
 } task_t;
 
 task_t *taskCreate(
