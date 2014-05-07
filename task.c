@@ -51,14 +51,14 @@ void taskRun(
 void taskRelease(
 		task_t *task)
 {
-	/* Release children */
-	for (unsigned index = 0; index < task->numChildren; index++)
-		taskRelease(task->children[index]);
-
 	/* Release task */
 	if (task->numParents <= 1)
 	{
-		if (task->children != NULL)
+		/* Release children */
+		for (unsigned index = 0; index < task->numChildren; index++)
+			taskRelease(task->children[index]);
+
+		if (task->numChildren != 0)
 			free(task->children);
 		free(task);
 	}
