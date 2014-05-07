@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdatomic.h>
 
 #include "exception.h"
 #include "task.h"
@@ -35,15 +36,14 @@ void taskRun(
 		task_t *task,
 		struct thread_pool *pool)
 {
-	task->numParentsDone = 0;
+	atomic_store(&task->numParentsDone, 0);
 	task->workFnPtr(task->argument);
 
 	/* Update children */
 	for (unsigned index = 0; index < task->numChildren; index++)
 	{
 		task_t *childTask = task->children[index];
-		childTask->numParentsDone++;
-		if (childTask->numParentsDone == childTask->numParents)
+		if (atomic_fetch_add(&childTask->numParentsDone, 1) == childTask->numParents - 1)
 			threadPoolAddTask(pool, childTask);
 	}
 }
