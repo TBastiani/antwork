@@ -1,29 +1,30 @@
 #ifndef _TASK_H_
 #define _TASK_H_
 
+#include <vector>
+#include <functional>
+#include <memory>
+#include <atomic>
+
 /* Forward declaration */
-struct thread_pool;
+class ThreadPool;
 
-typedef struct task
+class Task
 {
-	void (*workFnPtr)(void *);
-	void *argument;
+	public:
+		Task(std::function<void (void)> workFunction);
+		~Task();
 
-	struct task **children;
-	unsigned numChildren;
+		void addChild(std::shared_ptr<Task> child);
+		void run(ThreadPool &threadPool);
 
-	unsigned numParents;
-	_Atomic unsigned numParentsDone;
-} task_t;
+	protected:
+		std::function<void (void)> workFunction;
 
-task_t *taskCreate(
-		void (*fnPtr)(void *),
-		void *argument);
-void taskRelease(task_t *task);
+		std::vector<std::shared_ptr<Task> > children;
+		unsigned numParents;
+		std::atomic<unsigned> numParentsDone;
+};
 
-void taskAddParent(
-		task_t *task,
-		task_t *parentTask);
-void taskRun(task_t *task, struct thread_pool *pool);
 
 #endif /* _TASK_H_ */

@@ -1,23 +1,28 @@
 #ifndef _BARRIER_H_
 #define _BARRIER_H_
 
-#include <pthread.h>
+#include <thread>
+#include <memory>
+#include <mutex>
+#include <condition_variable>
 
 #include "task.h"
 
-typedef struct barrier
+class Barrier
 {
-	unsigned done;
-	pthread_cond_t doneCondition;
-	pthread_mutex_t doneMutex;
-} barrier_t;
+	public:
+		Barrier(Task **barrierTask);
+		~Barrier();
 
-task_t *barrierCreate(barrier_t *barrier);
+		void wait();
+		void reset();
 
-void barrierDestroy(barrier_t *barrier);
+	protected:
+		void run();
 
-void barrierWait(barrier_t *);
-
-void barrierReset(barrier_t *);
+		bool done;
+		std::condition_variable doneCondition;
+		std::mutex doneMutex;
+};
 
 #endif /* !_BARRIER_H_ */
