@@ -29,6 +29,7 @@ int main(int argc, char **argv)
 
 	ThreadPool threadPool(numThreads);
 
+	/* Setup a dummy task-graph */
 	shared_ptr<Task> rootTask(createDummyTask(0));
 	shared_ptr<Task> joinTask(rootTask);
 	for (unsigned levels = 0; levels < 4; levels++)
@@ -48,6 +49,7 @@ int main(int argc, char **argv)
 	Barrier barrier(&finalJoinTask);
 	joinTask->addChild(shared_ptr<Task>(finalJoinTask));
 
+	/* Execute the task-graph in a loop */
 	for (unsigned run = 0; run < 500; run++)
 	{
 		barrier.reset();
